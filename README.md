@@ -1,15 +1,32 @@
-# Elysia with Bun runtime
+# Elysia with Bun Auth API
 
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
+### Antes de empezar
+
+Debes crear un archivo `.env` en la raíz del proyecto con el Puerto que deseas, el secret para JWT y la URL de la base
+de datos PostgreSQL.
+
 ```bash
-bun create elysia ./elysia-example
+PORT
+JWT_SECRET
+DATABASE_URL
 ```
 
-## Development
-To start the development server run:
+Instala las dependencias con `bun install`.
+
+Realiza la migración de la base de datos
+
+```bash
+bunx prisma migrate dev
+```
+
+## Ejecución
 ```bash
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+<hr>
+
+### Peticiones de la API
+Cambia el puerto si es necesario.
+
+[Ejemplos de las peticiones HTTP](./api.http)
