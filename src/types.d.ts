@@ -1,4 +1,6 @@
-﻿export interface IUser {
+﻿import { JWTPayloadSpec } from "@elysiajs/jwt";
+
+export interface IUser {
     id?: number;
     username: string;
     email: string;
@@ -22,4 +24,9 @@ export interface ElysiaSet {
         secrets?: string | string[] | undefined;
         value?: unknown;
     }> | undefined;
+}
+
+export interface ElysiaJwt {
+    readonly sign: (morePayload: Record<string, string | number> & JWTPayloadSpec) => Promise<string>;
+    readonly verify: (jwt?: string | undefined) => Promise<false | (Record<string, string | number> & JWTPayloadSpec)>;
 }

@@ -1,5 +1,6 @@
 ﻿import { UserService } from "../services/UserServices";
-import { ElysiaSet, IUser } from "../types";
+import { ElysiaJwt, ElysiaSet, IUser } from "../types";
+import { Cookie } from "elysia";
 
 
 export class UserController {
@@ -9,7 +10,7 @@ export class UserController {
         this.userService = new UserService();
     }
 
-    create = async ({ username, email, password }: IUser, set: ElysiaSet) => {
+    async create({ username, email, password }: IUser, set: ElysiaSet) {
         try {
             const user = await this.userService.create(username, email, password);
             set.status = 201;
@@ -23,18 +24,19 @@ export class UserController {
             };
         }
     };
-    
-    login = async ({ email, password }: Omit<IUser, "username">, set: ElysiaSet) => {
+
+    async login({ email, password }: Omit<IUser, "username">, set: ElysiaSet,
+                jwt: ElysiaJwt, cookie: Record<string, Cookie<any>>) {
         try {
-            const user = await this.userService.login(email, password);
-            
+            const user = await this.userService.login(email, password, jwt, cookie.auth);
+
             if (!user) {
                 set.status = 401;
                 return {
                     error: "Unauthorized"
                 };
             }
-            
+
             set.status = 200;
             return {
                 data: user
@@ -46,4 +48,17 @@ export class UserController {
             };
         }
     };
+
+    async getProfile(set: ElysiaSet, jwt: ElysiaJwt, cookie: Record<string, Cookie<any>>) {
+        try {
+            const user = await this.userService.getProfile(set, jwt, cookie.auth);
+            return {
+                data: user
+            };
+        } catch (error) {
+            return {
+                error: "Internal server error"
+            };
+        }
+    }
 }
